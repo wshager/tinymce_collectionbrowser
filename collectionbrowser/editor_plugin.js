@@ -16,7 +16,7 @@
 			ed.addCommand('mceCollectionBrowser', function(ui) {
 				ed.windowManager.open({
 					file : url + '/browser.htm',
-					width : ed.getParam('browser_popup_width', 750),
+					width : ed.getParam('browser_popup_width', 800),
 					height : ed.getParam('browser_popup_height', 600),
 					inline : 1
 				}, {

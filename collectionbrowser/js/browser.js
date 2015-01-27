@@ -5,6 +5,7 @@ var BrowserDialog = {
 	},
 
 	init : function() {
+		console.warn("YA3")
 		var self = this;
 		var ed = tinyMCEPopup.editor;
 
@@ -14,20 +15,27 @@ var BrowserDialog = {
  		if(!sel) {
  		} else {
  		}
-
- 		var cb = new dexist.CollectionBrowser({
- 			target:"/",
- 			 onSelectResource:function(id,item,evt){
-                 // use this method to determine what will happen when a document is selected (double-click)
- 				 if(item.internetMediaType.matches(/image/)){
- 					 var src = "/rest/"+id.replace(/([^\/]*)/,"");
- 					 self.insert('<img src="'+src+'/>');
- 				 }
-             }
+ 		self.resize();
+ 		require(["dexist/cb-layer.js.uncompressed"],function(){
+ 			require(["dexist/CollectionBrowser"],function(){
+		
+		 		var cb = new dexist.CollectionBrowser({
+		 			target:"/collectionbrowser/",
+		 			thumbnailSize:4,
+ 					display:"tiles",
+		 			onSelectResource:function(id,item,evt){
+		                 // use this method to determine what will happen when a document is selected (double-click)
+		 				 if(item.internetMediaType.match(/image/)){
+		 					 var src = "/rest"+id.replace(/([^\/]*)/,"");
+		 					 self.insert('<img src="'+src+'"/>');
+		 				 }
+		             }
+		 		});
+		 		cb.placeAt(document.body);
+		 		cb.startup();
+				self.resize();
+ 			});
  		});
- 		cb.placeAt(document.body);
- 		cb.startup();
-		this.resize();
 	},
 
 	resize : function() {
@@ -56,6 +64,4 @@ var BrowserDialog = {
 };
 
 BrowserDialog.preInit();
-require(["dexist/CollectionBrowser"],function(){
-	tinyMCEPopup.onInit.add(BrowserDialog.init, BrowserDialog);
-});
+tinyMCEPopup.onInit.add(BrowserDialog.init, BrowserDialog);
