@@ -4,12 +4,11 @@ var BrowserDialog = {
 	preInit : function() {
 	},
 
-	init : function() {
-		console.warn("YA3")
+	init : function(init) {
 		var self = this;
 		var ed = tinyMCEPopup.editor;
-
- 		// get current selection if any		
+		var settings = init ? init.settings : {};
+ 		// get current selection if any
  		var sel = ed.selection.getContent();
  		
  		if(!sel) {
@@ -17,19 +16,23 @@ var BrowserDialog = {
  		}
  		self.resize();
  		require(["dexist/cb-layer.js.uncompressed"],function(){
- 			require(["dexist/CollectionBrowser"],function(){
+ 			require(["dexist/CollectionBrowser"],function(CollectionBrowser){
 		
-		 		var cb = new dexist.CollectionBrowser({
+		 		var cb = new CollectionBrowser({
 		 			target:"/collectionbrowser/",
 		 			thumbnailSize:4,
  					display:"tiles",
+ 					rootId:settings.collectionbrowser_root || "",
 		 			onSelectResource:function(id,item,evt){
-		                 // use this method to determine what will happen when a document is selected (double-click)
-		 				 if(item.internetMediaType.match(/image/)){
+						// use this method to determine what will happen when a document is selected (double-click)
+		 				if(item.internetMediaType.match(/image/)){
 		 					 var src = "/rest"+id.replace(/([^\/]*)/,"");
 		 					 self.insert('<img src="'+src+'"/>');
-		 				 }
-		             }
+		 				} else {
+		 					var type = item.internetMediaType;
+		 					self.insert('<a href="'+src+'" class="mce-fileicon '+type+'">'+item.name+'</a>');
+		 				}
+					}
 		 		});
 		 		cb.placeAt(document.body);
 		 		cb.startup();
